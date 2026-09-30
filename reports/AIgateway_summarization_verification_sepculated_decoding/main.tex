@@ -1,0 +1,350 @@
+\documentclass[11pt,a4paper]{article}
+
+\usepackage[a4paper,
+            left=2cm,
+            right=2cm,
+            top=2cm,
+            bottom=2cm]{geometry}
+
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{enumitem}
+\usepackage{parskip}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.4em}
+
+\setlist[itemize]{
+    topsep=4pt,
+    itemsep=2pt,
+    parsep=0pt
+}
+
+\title{\vspace{-1cm}\Huge\bfseries AI Gateway}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\section{Online Summarization for AI Gateway Systems}
+
+\subsection{Overview}
+
+Online summarization refers to the dynamic compression, abstraction, and restructuring of information during the inference pipeline. Although summarization has traditionally been studied as a natural language generation task, it can also be viewed as a systems-level optimization mechanism within AI Gateway architectures. In such systems, summarization can directly influence latency, operational cost, context utilization efficiency, and downstream response quality. Recent advances in prompt compression and context reduction demonstrate that substantial reductions in token usage can be achieved while preserving downstream task performance \cite{jiang2023llmlingua,jiang2024longllmlinguaacceleratingenhancingllms,verma2024contextualcompressionretrievalaugmentedgeneration}.
+
+From the perspective of an AI Gateway, online summarization can operate as a preprocessing, memory-management, aggregation, or optimization layer. Instead of merely generating shorter text, the objective becomes maximizing the utility of information delivered to downstream models under latency and budget constraints.
+
+\subsection{Context Compression}
+
+One of the most direct applications of online summarization is context compression. Modern LLM-based applications frequently process large contexts composed of retrieved documents, conversation histories, tool outputs, logs, and external knowledge sources. Since inference latency and cost generally increase with input length, compressing the context before invoking expensive models can substantially improve efficiency \cite{jiang2023llmlingua,jiang2024longllmlinguaacceleratingenhancingllms}.
+
+The general workflow can be represented as:
+
+\[
+\text{Raw Context}
+\rightarrow
+\text{Compression Model}
+\rightarrow
+\text{Compressed Context}
+\rightarrow
+\text{Target LLM}.
+\]
+
+Recent work such as LLMLingua and LongLLMLingua demonstrates that prompt compression can reduce token consumption significantly while maintaining answer quality \cite{jiang2023llmlingua,jiang2024longllmlinguaacceleratingenhancingllms}. Similarly, context-aware compression techniques for retrieval-augmented generation (RAG) attempt to preserve only information relevant to the current query while removing redundant or irrelevant content \cite{verma2024contextualcompressionretrievalaugmentedgeneration}.
+
+Within an AI Gateway, context compression can be integrated into routing policies. For example, the gateway may decide whether compression is necessary based on prompt length, expected inference cost, available budget, or service-level objectives.
+
+\subsection{Conversation Memory Compression}
+
+Long-term conversational systems face a fundamental scalability challenge. As interactions accumulate over time, transmitting the entire conversation history to an LLM becomes increasingly expensive and may exceed context-window limitations. To address this issue, many systems compress historical interactions into condensed memory representations \cite{wu2021memorizing}.
+
+The resulting architecture can be represented as:
+
+\[
+\text{Conversation History}
+\rightarrow
+\text{Memory Summarizer}
+\rightarrow
+\text{Compressed Memory}
+\rightarrow
+\text{Current Prompt}.
+\]
+
+Such approaches allow systems to preserve important facts, user preferences, decisions, and task-relevant information while discarding less useful content. This capability becomes increasingly important as conversational agents operate over long interaction horizons and large context windows \cite{bertsch2023lostmiddle,wu2021memorizing}.
+
+For AI Gateways, memory compression can reduce operational costs while extending the effective lifespan of conversational context.
+
+\subsection{Multi-Model Response Aggregation}
+
+Online summarization can also be employed after inference rather than before inference. Instead of routing a query to a single model, the gateway may collect responses from multiple models and generate a consolidated answer.
+
+A typical architecture is:
+
+\[
+\{\text{GPT}, \text{Claude}, \text{Gemini}\}
+\rightarrow
+\text{Aggregator}
+\rightarrow
+\text{Final Response}.
+\]
+
+The aggregation component identifies common information, resolves contradictions, removes redundancies, and produces a unified response. This strategy is closely related to ensemble learning, self-consistency methods, and multi-agent reasoning systems, which have demonstrated improvements in reasoning accuracy and factual reliability \cite{wang2023selfconsistency,debate2024}.
+
+In enterprise deployments, such architectures may be particularly valuable for high-risk use cases where a single model failure can have significant consequences.
+
+\subsection{Consensus and Disagreement Analysis}
+
+A more advanced form of aggregation involves explicit consensus analysis. Instead of directly producing a final response, the summarization module may identify:
+
+\begin{itemize}
+\item Areas of agreement across models,
+\item Areas of disagreement,
+\item Missing information,
+\item Potentially uncertain claims,
+\item Confidence indicators.
+\end{itemize}
+
+The resulting meta-summary can be consumed by a downstream verifier or escalation mechanism. This approach is conceptually related to self-consistency decoding and multi-agent debate frameworks, both of which attempt to improve answer reliability through agreement analysis across multiple reasoning paths \cite{wang2023selfconsistency,debate2024}.
+
+Within an AI Gateway, consensus summaries can serve as an intermediate representation for quality estimation and routing decisions.
+
+\subsection{Hierarchical Summarization}
+
+When dealing with extremely large contexts, hierarchical summarization becomes particularly attractive. Instead of compressing all information in a single step, summarization is performed recursively.
+
+The resulting hierarchy may resemble:
+
+\[
+\text{Documents}
+\rightarrow
+\text{Local Summaries}
+\rightarrow
+\text{Global Summary}
+\rightarrow
+\text{Final Context}.
+\]
+
+Hierarchical compression improves scalability and enables efficient processing of large document repositories, enterprise knowledge bases, and long-term memory stores. Such architectures become increasingly important as context windows continue to expand and applications demand access to larger information repositories.
+
+\subsection{Adaptive Summarization Policies}
+
+An important research direction is adaptive summarization. Rather than always applying compression, the gateway first estimates factors such as:
+
+\begin{itemize}
+\item Query difficulty,
+\item Context relevance,
+\item Budget constraints,
+\item Latency requirements,
+\item Expected quality impact.
+\end{itemize}
+
+The gateway then dynamically determines:
+
+\begin{itemize}
+\item Whether summarization should be applied,
+\item Which summarization model should be used,
+\item The desired compression ratio,
+\item Whether multiple compression stages are necessary.
+\end{itemize}
+
+Such adaptive strategies naturally complement modern routing frameworks that optimize quality-cost trade-offs through dynamic model selection \cite{frugalgpt,routellm,manias2024semanticroutingenhancedperformance}.
+
+\subsection{Proposed Research Directions}
+
+Several promising research directions emerge for AI Gateway systems:
+
+\begin{enumerate}
+\item Query-aware context compression optimized for downstream answer quality.
+\item Budget-aware summarization policies that adapt compression aggressiveness based on operational costs.
+\item Consensus-guided aggregation for multi-model routing architectures.
+\item Learned summarization policies jointly optimized with routing decisions.
+\item Uncertainty-preserving summarization that explicitly retains information required for downstream verification.
+\item Multi-stage summarization pipelines combining retrieval, compression, and aggregation.
+\end{enumerate}
+
+Among these directions, adaptive context compression and consensus-guided aggregation appear particularly promising because they directly affect all three primary gateway objectives: quality, latency, and operational cost.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\section{Online Verification and Speculative Decoding for AI Gateway Systems}
+
+\subsection{Overview}
+
+Online verification refers to inference-time mechanisms that validate, refine, accelerate, or improve generated outputs while maintaining quality guarantees. Among recent developments, speculative decoding has emerged as one of the most influential techniques for reducing large language model inference latency \cite{leviathan2023speculative,chen2023speculative}.
+
+The fundamental idea is to use a small and inexpensive draft model to predict several future tokens while a larger target model verifies these predictions in parallel. Unlike traditional approximation-based acceleration methods, speculative decoding preserves the target model's output distribution and therefore maintains output quality under the theoretical framework introduced by Leviathan et al. \cite{leviathan2023speculative}.
+
+Beyond acceleration, verification mechanisms are increasingly used as reliability layers in production AI systems where quality assurance, hallucination mitigation, and risk management are critical concerns \cite{frugalgpt,routellm}.
+
+\subsection{Classical Speculative Decoding}
+
+The standard speculative decoding architecture consists of two models:
+
+\[
+\text{Draft Model}
+\rightarrow
+\text{Candidate Tokens}
+\rightarrow
+\text{Target Model Verification}.
+\]
+
+The draft model proposes multiple future tokens, and the target model verifies these proposals in a single forward pass. If accepted, several tokens can be emitted simultaneously, thereby reducing autoregressive decoding overhead.
+
+Experimental studies report speedups of approximately two to three times while preserving the output distribution of the target model \cite{leviathan2023speculative,chen2023speculative}.
+
+Within an AI Gateway, speculative decoding can be interpreted as a latency optimization layer that improves system responsiveness without sacrificing answer quality.
+
+\subsection{Speculative Decoding as a Gateway Component}
+
+The primary objective of many AI Gateway systems is to maximize response quality while satisfying latency and budget constraints:
+
+\[
+\max \text{Quality}
+\]
+
+subject to
+
+\[
+\text{Cost} \leq C,
+\qquad
+\text{Latency} \leq L.
+\]
+
+Speculative decoding effectively shifts the latency-quality Pareto frontier by reducing response time while maintaining quality. Consequently, it can be deployed as an orthogonal optimization mechanism alongside model routing, caching, and prompt compression.
+
+For enterprise applications with strict service-level agreements, this capability can significantly improve user experience.
+
+\subsection{Self-Speculative Decoding}
+
+A notable extension is self-speculative decoding, introduced in Draft \& Verify \cite{zhang2023draftverify}. Instead of deploying a separate draft model, the target model itself generates draft tokens using a reduced-computation execution path.
+
+Typically, selected layers are skipped during draft generation and subsequently restored during verification.
+
+Advantages include:
+
+\begin{itemize}
+\item Elimination of an additional deployed model,
+\item Reduced infrastructure complexity,
+\item Lower memory requirements,
+\item Simpler production integration.
+\end{itemize}
+
+Such approaches are particularly attractive in environments where maintaining multiple models introduces operational overhead.
+
+\subsection{Tree-Based and Multi-Branch Verification}
+
+Recent research has extended speculative decoding beyond single-path verification. SpecInfer introduces a tree-based framework in which multiple candidate continuations are generated and verified simultaneously \cite{miao2024specinfer}.
+
+The resulting architecture resembles:
+
+\[
+\text{Candidate Tree}
+\rightarrow
+\text{Parallel Verification}
+\rightarrow
+\text{Longest Accepted Path}.
+\]
+
+By verifying multiple branches concurrently, hardware utilization can be improved and throughput can increase significantly.
+
+These methods suggest that verification itself can become a routing problem where computational resources are allocated among competing candidate continuations.
+
+\subsection{Adaptive Speculation Policies}
+
+The effectiveness of speculative decoding depends heavily on token acceptance rates. When draft predictions frequently disagree with the target model, performance gains may diminish substantially.
+
+Recent work therefore investigates adaptive policies that estimate:
+
+\begin{itemize}
+\item Query difficulty,
+\item Draft-model confidence,
+\item Historical acceptance rates,
+\item Current system load,
+\item Expected latency improvements.
+\end{itemize}
+
+Based on these estimates, the gateway may dynamically adjust speculation length or disable speculative decoding altogether when expected gains are insufficient \cite{su2023synergy}.
+
+This transforms speculative decoding from a static optimization into an adaptive decision-making process.
+
+\subsection{Verification Beyond Decoding}
+
+The concept of online verification extends far beyond token-level verification.
+
+Potential verification tasks include:
+
+\begin{itemize}
+\item Fact verification,
+\item Consistency checking,
+\item Hallucination detection,
+\item Safety validation,
+\item Tool-output verification,
+\item Citation verification,
+\item Code correctness validation.
+\end{itemize}
+
+In these settings, verification acts as a quality-control layer rather than merely an acceleration mechanism.
+
+As AI systems increasingly operate in safety-critical environments, such verification stages may become mandatory components of production architectures.
+
+\subsection{Selective Verification}
+
+A particularly promising direction is selective verification.
+
+Rather than verifying an entire response, the gateway identifies potentially unreliable regions and verifies only those segments.
+
+Examples include:
+
+\begin{itemize}
+\item Numerical claims,
+\item Factual statements,
+\item External references,
+\item Generated code,
+\item Safety-sensitive content.
+\end{itemize}
+
+Selective verification can substantially reduce verification costs while maintaining reliability. It also aligns naturally with risk-aware routing strategies in which computational resources are concentrated on high-risk outputs.
+
+\subsection{Verification for Multi-Model Routing}
+
+Verification can also operate as a post-routing stage.
+
+A representative architecture is:
+
+\[
+\text{Cheap Model}
+\rightarrow
+\text{Verifier}
+\rightarrow
+\text{Escalation if Necessary}.
+\]
+
+Only responses that fail verification are escalated to more expensive frontier models.
+
+This design philosophy closely resembles cascade-based inference strategies explored in FrugalGPT and modern routing frameworks \cite{frugalgpt,routellm}. By combining routing, verification, and escalation into a unified decision process, the gateway can significantly reduce costs while maintaining quality guarantees.
+
+\subsection{Proposed Research Directions}
+
+Several promising research directions emerge:
+
+\begin{enumerate}
+\item Learned verification models optimized specifically for gateway deployment.
+\item Confidence-aware speculative decoding.
+\item Uncertainty-aware verification policies.
+\item Risk-aware selective verification.
+\item Joint optimization of routing, verification, and escalation.
+\item Multi-provider speculative architectures where lightweight models from different vendors serve as draft generators.
+\item Verification-driven quality estimation for dynamic model selection.
+\end{enumerate}
+
+Among these directions, the combination of uncertainty estimation, verification, and routing appears particularly promising because it directly targets the three fundamental objectives of AI Gateway systems: maximizing quality while minimizing latency and operational cost.
+
+\bibliographystyle{splncs04}
+\bibliography{main}
+
+\end{document}

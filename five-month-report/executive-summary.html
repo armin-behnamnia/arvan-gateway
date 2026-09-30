@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Gateway - Five-Month Executive Summary</title>
+<style>
+
+:root{
+  --ground:#FBFCFD; --surface:#FFFFFF; --sunk:#F3F6F7;
+  --ink:#0F1A1F; --ink-2:#3C4C54; --muted:#5E6E75; --line:#DCE5E8;
+  --accent:#0E7C86; --accent-soft:#E2F1F2;
+  --s1:#2a78d6; --s2:#eb6834;
+  --better:#D6E6FA; --better-ink:#174E91;
+  --worse:#F9DCDB; --worse-ink:#A32E2D;
+  --same:#EEF0F0; --same-ink:#5E6E75;
+  --on:#1F7A4A; --on-soft:#E3F2EA; --off:#A32E2D; --off-soft:#FBE7E6; --lim:#9A5B00; --lim-soft:#FBF0DC;
+}
+*{box-sizing:border-box}
+body{background:var(--ground); color:var(--ink); margin:0;
+  font-family:"IBM Plex Sans",system-ui,"Segoe UI",sans-serif; font-size:13.5px; line-height:1.5;
+  padding-inline:16px}
+section.page{max-width:780px; margin:0 auto; padding-block:36px; border-bottom:1px solid var(--line)}
+.eyebrow{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:11px; letter-spacing:.06em;
+  text-transform:uppercase; color:var(--accent); font-weight:600}
+h1{font-size:27px; line-height:1.2; margin:6px 0 12px; letter-spacing:-.01em}
+.cover h1{font-size:36px}
+h2{font-size:16px; margin:6px 0 2px}
+h3{font-size:14px; margin:18px 0 6px}
+.lede{font-size:15.5px; color:var(--ink-2); margin:0 0 18px; max-width:66ch}
+.lede.small{font-size:13.5px; margin-bottom:10px}
+.body{color:var(--ink-2); margin:10px 0 14px; max-width:72ch}
+.center{text-align:center}
+.muted{color:var(--muted); font-size:12px}
+code{font-family:"IBM Plex Mono",monospace; font-size:.9em; background:var(--sunk); padding:0 3px; border-radius:3px}
+
+.cards{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.card{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px;
+  border-top:5px solid var(--line)}
+.card.on{border-top-color:var(--on)} .card.off{border-top-color:var(--off)} .card.limited{border-top-color:var(--lim)}
+.chip{display:inline-block; font-family:"IBM Plex Mono",monospace; font-size:10.5px; font-weight:600;
+  text-transform:uppercase; letter-spacing:.05em; padding:2px 8px; border-radius:99px}
+.on .chip{background:var(--on-soft); color:var(--on)} .off .chip{background:var(--off-soft); color:var(--off)}
+.limited .chip{background:var(--lim-soft); color:var(--lim)}
+.what{margin:0 0 6px; color:var(--muted); font-size:12.5px}
+.big{font-family:"IBM Plex Mono",monospace; font-size:26px; font-weight:600; line-height:1.15}
+.big small{font-size:14px; color:var(--muted); font-weight:400}
+.why{margin:4px 0 0; font-size:12.5px; color:var(--ink-2)}
+.howto{margin-top:16px; background:var(--accent-soft); border-radius:10px; padding:12px 16px; font-size:13px}
+
+.flow{display:flex; align-items:stretch; gap:6px; margin:8px 0 4px}
+.step{flex:1; background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:9px 10px;
+  font-size:12.5px; line-height:1.35}
+.step span{display:block; font-family:"IBM Plex Mono",monospace; color:var(--accent); font-weight:600; font-size:12px}
+.arrow{align-self:center; color:var(--muted)}
+
+table{border-collapse:collapse; width:100%}
+.scen th{font-family:"IBM Plex Mono",monospace; font-size:10px; text-transform:uppercase; letter-spacing:.04em;
+  color:var(--muted); text-align:left; border-bottom:1px solid var(--line); padding:4px 6px; font-weight:500}
+.scen td{border-bottom:1px solid var(--line); padding:4px 6px; vertical-align:top; font-size:12.5px; line-height:1.3}
+.scen td.n{font-family:"IBM Plex Mono",monospace; color:var(--muted)}
+.num{text-align:right; font-family:"IBM Plex Mono",monospace}
+.two{display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:14px}
+.note-box{background:var(--sunk); border-radius:8px; padding:10px 12px; font-size:12.5px; color:var(--ink-2)}
+
+.grid-legend{display:flex; flex-wrap:wrap; gap:14px; font-size:12px; color:var(--ink-2); margin:0 0 8px}
+.grid-legend i{display:inline-block; width:14px; height:14px; border-radius:3px; vertical-align:-2px; margin-right:5px}
+.grid-legend i.better{background:var(--better)} .grid-legend i.worse{background:var(--worse)}
+.grid-legend i.same{background:var(--same)} .grid-legend i.unused{border:1.5px dashed #C4D0D4}
+.grid{table-layout:fixed; border-collapse:separate; border-spacing:4px}
+.grid thead th{font-size:12.5px; font-weight:600; padding:4px; text-align:center}
+.grid th.rowh{text-align:left; font-size:12.5px; font-weight:500; width:24%; padding-right:6px}
+.cell{text-align:center; border-radius:6px; padding:6px 4px; height:44px}
+.cell b{display:block; font-family:"IBM Plex Mono",monospace; font-size:15px; line-height:1.2}
+.cell span{font-size:10.5px}
+.cell.better{background:var(--better); color:var(--better-ink)}
+.cell.worse{background:var(--worse); color:var(--worse-ink)}
+.cell.same{background:var(--same); color:var(--same-ink)}
+.cell.unused{border:1.5px dashed #C4D0D4; color:#8A989E}
+.takeaways{display:grid; grid-template-columns:1fr 1fr; gap:6px 16px; margin-top:12px; font-size:12.5px; color:var(--ink-2)}
+
+.chart{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:10px 14px 8px; margin:8px 0 12px}
+.legend{display:flex; flex-wrap:wrap; gap:14px; font-size:11.5px; color:var(--ink-2); margin-bottom:6px}
+.key i{display:inline-block; width:12px; height:12px; border-radius:3px; margin-right:5px; vertical-align:-1px}
+.key i.s1{background:var(--s1)} .key i.s2{background:var(--s2)}
+.key.note{color:var(--muted)}
+.crow,.axis{display:flex; align-items:center}
+.crow{border-top:1px solid #EEF2F3; padding:2px 0}
+.clabel{width:150px; flex:none; font-size:11.5px; color:var(--ink-2); padding-right:8px}
+.cplot{position:relative; flex:1}
+.bar-row{position:relative; height:12px; margin:2px 0}
+.bar{position:absolute; top:1px; height:10px}
+.bar.pos{border-radius:0 3px 3px 0} .bar.neg{border-radius:3px 0 0 3px}
+.bar.s1{background:var(--s1)} .bar.s2{background:var(--s2)}
+.bar.faint{opacity:.35}
+.val{position:absolute; top:-1px; font-family:"IBM Plex Mono",monospace; font-size:10px; color:var(--ink-2); white-space:nowrap}
+.unused-label{position:absolute; top:-1px; margin-left:6px; font-size:10px; color:#8A989E; font-style:italic}
+.zero{position:absolute; top:-3px; bottom:-3px; width:1px; background:#9AA8AE}
+.ticks{height:16px}
+.tick{position:absolute; top:0; height:6px; border-left:1px solid #C4D0D4}
+.tick span{position:absolute; top:5px; transform:translateX(-50%); font-family:"IBM Plex Mono",monospace; font-size:9.5px; color:var(--muted)}
+.axis-title{text-align:center; font-size:10.5px; color:var(--muted); margin-top:2px; padding-left:150px}
+.cache .bar-row{height:11px}
+
+.versus{display:grid; grid-template-columns:1fr 1fr; gap:12px; margin:6px 0 4px}
+.vs{border-radius:10px; padding:12px 16px; text-align:center}
+.vs.bad{background:var(--worse); color:var(--worse-ink)} .vs.good{background:var(--better); color:var(--better-ink)}
+.vs-k{font-weight:600; font-size:13px}
+.vs-n{font-family:"IBM Plex Mono",monospace; font-size:34px; font-weight:600; line-height:1.2}
+.vs-d{font-size:12.5px}
+
+.example{background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:9px 12px; margin:8px 0}
+.ex-title{font-weight:600; font-size:12.5px; margin-bottom:4px}
+.ex-row{display:flex; gap:10px; font-size:12px; margin:2px 0}
+.ex-k{flex:none; width:120px; font-family:"IBM Plex Mono",monospace; font-size:9.5px; text-transform:uppercase;
+  letter-spacing:.03em; color:var(--muted); padding-top:2px}
+.ex-v{flex:1; font-family:"IBM Plex Mono",monospace; font-size:11.5px; color:var(--ink-2)}
+.ex-v.changed{color:var(--ink)}
+.ex-answers{display:grid; grid-template-columns:1fr 1fr 1fr; gap:8px; margin-top:5px}
+.ex-answers .ex-k{width:auto}
+.ans{font-family:"IBM Plex Mono",monospace; font-size:12px; border-radius:5px; padding:3px 7px; margin-top:1px}
+.ans.ok{background:var(--sunk)} .ans.bad{background:var(--worse); color:var(--worse-ink)}
+.ans.good{background:var(--better); color:var(--better-ink)}
+.ans.gold{background:var(--on-soft); color:var(--on)}
+[dir="rtl"]{font-family:"Vazirmatn","IBM Plex Mono",Tahoma,sans-serif !important; text-align:right}
+.ex-note{font-size:11.5px; color:var(--muted); margin-top:4px}
+
+.mini{margin-top:6px; width:100%; font-size:12px}
+.mini th{font-family:"IBM Plex Mono",monospace; font-size:10px; font-weight:500; color:var(--muted); text-align:right}
+.mini td{padding:1px 0} .mini td+td{text-align:right; font-family:"IBM Plex Mono",monospace}
+.authorship{margin-top:22px; border-top:1px solid var(--line); padding-top:12px; font-size:12px; color:var(--ink-2)}
+.recs{padding-left:20px; margin:6px 0 14px} .recs li{margin:0 0 9px; font-size:13.5px; color:var(--ink-2)}
+.recs b{color:var(--ink)}
+.found{background:var(--lim-soft); border-radius:10px; padding:11px 14px; font-size:12.5px}
+.limits{padding-left:18px; margin:0; font-size:12.5px; color:var(--ink-2)} .limits li{margin-bottom:4px}
+
+@media (max-width:640px){
+  .cards,.two,.versus,.takeaways{grid-template-columns:1fr}
+  .flow{flex-direction:column} .arrow{transform:rotate(90deg)}
+  .clabel{width:96px} .axis-title{padding-left:96px}
+  .grid-wrap{overflow-x:auto}
+}
+@media print{
+  @page{size:A4; margin:12mm 13mm}
+  body{background:#fff; padding:0; font-size:12.5px}
+  section.page{max-width:none; padding:0; border:0; break-before:page; page-break-before:always}
+  section.page:first-child{break-before:auto; page-break-before:auto}
+  .card,.example,.chart,.note-box,.vs,.found{break-inside:avoid}
+  .bar,.cell,.vs,.ans,.card,.chip,.howto,.note-box,.found,.key i,.grid-legend i{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+}
+
+/* markdown-generated tables: reuse the template's table look */
+table{border-collapse:collapse; width:100%; margin:10px 0}
+th{font-family:"IBM Plex Mono",ui-monospace,monospace; font-size:10px; text-transform:uppercase;
+  letter-spacing:.04em; color:var(--muted); text-align:left; border-bottom:1px solid var(--line);
+  padding:4px 6px; font-weight:500}
+td{border-bottom:1px solid var(--line); padding:4px 6px; vertical-align:top; font-size:12px; line-height:1.35}
+tr:last-child td{border-bottom:none}
+h1{font-size:24px; margin:6px 0 12px}
+section.page h1{break-before:page; page-break-before:always; padding-top:8px}
+section.page h1:first-of-type{break-before:auto; page-break-before:auto}
+h2{font-size:17px; margin:20px 0 6px; border-bottom:1px solid var(--line); padding-bottom:3px}
+h3{font-size:14px; margin:16px 0 4px}
+blockquote{border-left:3px solid var(--accent); margin:8px 0; padding:2px 12px; color:var(--ink-2);
+  background:var(--accent-soft); border-radius:0 6px 6px 0}
+code{font-family:"IBM Plex Mono",monospace; font-size:.88em; background:var(--sunk);
+  padding:0 3px; border-radius:3px}
+pre{background:var(--sunk); border:1px solid var(--line); border-radius:8px; padding:10px 12px;
+  overflow-x:auto; font-size:11px}
+pre code{background:none; padding:0}
+ol,ul{padding-left:22px} li{margin-bottom:5px; font-size:13px; color:var(--ink-2)}
+li b{color:var(--ink)}
+strong{color:var(--ink)}
+hr{border:none; border-top:1px solid var(--line); margin:18px 0}
+
+@page { size: A4; margin: 14mm 13mm;
+  @bottom-center { content: counter(page) " / " counter(pages);
+    font-family: "IBM Plex Mono", monospace; font-size: 9px; color: #5E6E75; } }
+body{background:#fff; padding:0; font-size:12px}
+section.page{max-width:none; padding:0; border:0}
+</style>
+</head>
+<body>
+<h1>AI Gateway — Five-Month Executive Summary</h1>
+<p><strong>Arvan Cloud AI Gateway · May–September 2026 · Executive Report</strong></p>
+<hr />
+<h2>The project in one paragraph</h2>
+<p>Over the last five months we designed and stress-tested an AI gateway: a layer that sits
+in front of many language models and decides, for every request, <strong>which model should
+answer, how much of the conversation to keep, and what can be served from memory</strong> —
+always under explicit time and cost budgets. The work moved from a technology survey,
+through a full architecture design, to eleven benchmark and experimental studies whose
+numbers now decide what ships and what stays off. This report is the short version; the
+full detail, with every table and confidence interval, is in the accompanying technical
+report.</p>
+<hr />
+<h2>Page 1 — The verdicts</h2>
+<table>
+<thead>
+<tr>
+<th>#</th>
+<th>What was judged</th>
+<th>Verdict</th>
+<th>Headline number</th>
+<th>Why</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td><strong>Anchor routing</strong> (pick the model from the question text)</td>
+<td><strong>TURN ON</strong></td>
+<td>78.67% at $0.002751/query</td>
+<td>Matches the best GPU router's quality, 24× faster (0.64 ms vs 15.2 ms), needs no GPU, and beats the always-GPT-4 floor on quality AND cost.</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>Reordering the prompt for the cache</strong></td>
+<td><strong>TURN ON</strong></td>
+<td>46–99% cacheable</td>
+<td>Free (2.5 ms), changes no words, better answers in 5 of 12 request kinds, worse in none. The one unambiguous win.</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>Cascades on top of a good router</strong></td>
+<td><strong>KEEP OFF by default</strong></td>
+<td>+1.1 pts for 2.4× tokens</td>
+<td>Escalation-on-disagreement escalates 38% of <em>correct</em> answers. A cascade helps a weak router, not a strong one.</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Summarizing old chat</strong></td>
+<td><strong>KEEP OFF</strong></td>
+<td>−43.3 vs +10.1 pts</td>
+<td>Destroys answers when the question refers back to the chat; helps only on topic changes the gateway cannot detect.</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>Rewriting the question</strong></td>
+<td><strong>KEEP OFF</strong></td>
+<td>0 of 12 better</td>
+<td>Even a strong rewriting model improved none of the 12 request kinds and made 2 worse, while adding a model call per request.</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>Removing unimportant words</strong></td>
+<td><strong>ONLY LONG DOCUMENTS</strong></td>
+<td>−54% tokens, −4.3 pts</td>
+<td>Works above 5,000 tokens only. Without that gate, scores fall 24–51 points everywhere.</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>Semantic cache in Persian</strong></td>
+<td><strong>MEANING LAYER OFF</strong></td>
+<td>63% wrong</td>
+<td>The meaning-match layer served a wrong answer to nearly two of every three Persian reuses. Exact and keyword layers stay.</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>The cache guard</strong></td>
+<td><strong>PER LANGUAGE</strong></td>
+<td>0.88:1 vs 6.5:1</td>
+<td>A fair trade in Persian (0.88 good answers lost per bad one stopped), a bad one in English (6.5 lost per bad stopped).</td>
+</tr>
+</tbody>
+</table>
+<p><strong>How to read the numbers.</strong> Every quality score is out of 100 and every difference
+carries a confidence interval. Asking the same model the same question twice already
+moves scores by up to ±6 points, so we only call a change real when it clearly exceeds
+that noise. Where a number could not be established, we say so rather than guess.</p>
+<hr />
+<h2>Page 2 — What we built the decisions on</h2>
+<p><strong>Scale of the evidence.</strong></p>
+<table>
+<thead>
+<tr>
+<th>Study</th>
+<th>What it tested</th>
+<th>Size</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>RouterBench, nine routing methods</td>
+<td>11 models, real dollar costs</td>
+<td>36,481 prompts (7,296 held out)</td>
+</tr>
+<tr>
+<td>ArvanCloud pool, routing + cascades</td>
+<td>7 models, real list prices</td>
+<td>150 MMLU-Pro questions (90 held out), 12 splits</td>
+</tr>
+<tr>
+<td>PCM scenario test, four methods × 12 request kinds</td>
+<td>Answer quality with each method on/off</td>
+<td>3,464 requests per method</td>
+</tr>
+<tr>
+<td>PCM ablation (Aug)</td>
+<td>Compression vs routing accuracy</td>
+<td>~1,600 judge calls, 100 prompts per arm</td>
+</tr>
+<tr>
+<td>PCM ablation (Sep)</td>
+<td>All four methods at 1,000 questions</td>
+<td>~12,700 judge calls</td>
+</tr>
+<tr>
+<td>Cache paraphrase benchmark</td>
+<td>Five-layer cache correctness</td>
+<td>9,917 labelled question pairs, 2 languages</td>
+</tr>
+<tr>
+<td>Live cache + guard trial</td>
+<td>Cache and guard on real traffic</td>
+<td>5,000 prompts through the gateway</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>Page 3 — The five findings that matter most</h2>
+<p><strong>1. A $0.0005 router question beats a $0.003 model call.</strong>
+The old baseline used an LLM judge to pick the model: 61.25% quality at $0.000223 per
+query and ~2,180 ms per decision. Our anchor router reaches 64.75% on the same prompts
+at $0.000143 — better quality, 36% cheaper, and about 0.4 ms instead of 2 seconds
+(sources 07 and 08).</p>
+<p><strong>2. Half the tokens, same routing accuracy — but only on long prompts.</strong>
+On ~6,000-token prompts our shipped compression cut judge input tokens 47.6% with
+exactly 0.00 points of routing-accuracy change. On the 178-token prompts that dominate
+real traffic it bought nothing and cost 41 ms, which is why the 5,000-token gate exists
+and must stay (sources 11 and 12).</p>
+<p><strong>3. We caught our own mistake before it shipped.</strong>
+An earlier round recommended chat summarization as "free" (+0.9 points). Re-tested on
+conversations where the question actually depends on history, it costs −40.8 points and
+destroyed 449 of 996 answers. The earlier test had been built from unrelated questions.
+This reversal — and the honesty of recording it — is the strongest evidence the
+evaluation process works (source 12).</p>
+<p><strong>4. Persian breaks the default tools, and we measured exactly how.</strong>
+Blind reuse would score 67% in English and 40% in Persian just from the data mix; after
+correcting for that, the cache adds +20.4 points in English but only +8.2 in Persian.
+The meaning-match layer was quietly using an English-only embedding model — now
+configurable, multilingual by default, and pinned by 129 automated tests (source 14).</p>
+<p><strong>5. The architecture makes budget violations structurally impossible.</strong>
+Every request runs on a ledger that reserves cost before dispatch and a watchdog that
+fires at deadline minus a reserved tail, cancelling in-flight work and returning the
+best answer so far. The design keeps the hot path boring — rules, hash lookups, ledger
+arithmetic, at most one 1.5B router model (source 06).</p>
+<hr />
+<h2>Page 4 — What to do next</h2>
+<ol>
+<li><strong>Ship anchor routing</strong> as the default router, with rules as the permanent fallback
+   floor. Decision time 0.64 ms on CPU; budget p99 ≤ 25 ms is met with ~40× headroom.</li>
+<li><strong>Turn on prompt reordering everywhere.</strong> Free money: cache share 0% → 46–99%
+   depending on request kind, and the gateway is 40% faster under load (4.49 s → 2.68 s
+   at 8 concurrent requests).</li>
+<li><strong>Keep cascades available but not default.</strong> anchor top-3 + cascade reaches 94.4%
+   accuracy (vs 93.3% anchor alone, 92.7% best single model) but at 2.07 calls and 1,505
+   tokens per query; on 90 questions the interval spans zero. Use only where accuracy
+   per question outweighs cost.</li>
+<li><strong>Keep the three "off" verdicts off</strong>: chat summarization, question rewriting, and
+   sub-5,000-token word removal. Each failed its scenario test; two of them can
+   silently corrupt answers.</li>
+<li><strong>Set cache policy per language.</strong> Persian: exact + keyword only, guard on. English:
+   dial at 0.85 (88% right, 17% caught) or 0.95 (95% right, 4% caught), guard off.</li>
+<li><strong>Close the two open measurement gaps before quoting savings externally</strong>: re-run
+   compression on real retrieved documents (current numbers are best cases on synthetic
+   data), and re-baseline the semantic-cache hit-rate gate on real traffic.</li>
+</ol>
+<p><strong>Limits of this summary.</strong> One answering model (GPT-5.4-Mini) in the scenario tests;
+benchmark questions are already well-written; ~300 questions per request kind means
+changes under ~3 points are invisible; long-document and chat test sets are synthetic;
+ArvanCloud figures carry ~±6 pp variance on 90 held-out questions; OpenRouter list
+prices stood in for ArvanCloud pricing.</p>
+<hr />
+<h2>Page 5 — Source documents</h2>
+<p>Every document referenced above is copied, renamed, inside this folder:</p>
+<table>
+<thead>
+<tr>
+<th>Ref</th>
+<th>File</th>
+<th>What it is</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>01</td>
+<td><code>sources/01-core-technology-stack.pdf</code></td>
+<td>Technology stack selection (Python, FastAPI, LiteLLM, Redis, PostgreSQL, vLLM)</td>
+</tr>
+<tr>
+<td>02</td>
+<td><code>sources/02-evaluation-metrics-reference.pdf</code></td>
+<td>Definitions of Win Rate, AUCQ, TTFT, TPOT, Pareto frontier</td>
+</tr>
+<tr>
+<td>03</td>
+<td><code>sources/03-advanced-routing-methodologies-survey.pdf</code></td>
+<td>Survey of 11 advanced routing methodologies</td>
+</tr>
+<tr>
+<td>04</td>
+<td><code>sources/04-routing-baselines.pdf</code></td>
+<td>Naive, heuristic, utility-based, and cascade baselines</td>
+</tr>
+<tr>
+<td>05</td>
+<td><code>sources/05-verified-technique-inventory.pdf</code></td>
+<td>55 techniques across 7 areas, adversarially fact-checked</td>
+</tr>
+<tr>
+<td>06</td>
+<td><code>sources/06-architecture-and-technique-analysis.pdf</code></td>
+<td>3-phase architecture, feature-flag ladder, assumption register</td>
+</tr>
+<tr>
+<td>07</td>
+<td><code>sources/07-routerbench-three-routers-report.pdf</code></td>
+<td>First RouterBench study: 3 routers implemented and evaluated</td>
+</tr>
+<tr>
+<td>08</td>
+<td><code>sources/08-routerbench-nine-methods-report.pdf</code></td>
+<td>Full nine-method RouterBench comparison</td>
+</tr>
+<tr>
+<td>09</td>
+<td><code>sources/09-routing-cascading-synthesis.pdf</code></td>
+<td>Cross-study synthesis of 5 routing/cascade studies</td>
+</tr>
+<tr>
+<td>10</td>
+<td><code>sources/10-arvancloud-routing-cascade-report.pdf</code></td>
+<td>Routing + cascade test on the 7-model ArvanCloud pool</td>
+</tr>
+<tr>
+<td>11</td>
+<td><code>sources/11-pcm-ablation-august.pdf</code></td>
+<td>PCM ablation: compression vs routing accuracy (August)</td>
+</tr>
+<tr>
+<td>12</td>
+<td><code>sources/12-pcm-ablation-september.pdf</code></td>
+<td>PCM ablation: four methods at 1,000 questions (September)</td>
+</tr>
+<tr>
+<td>13</td>
+<td><code>sources/13-pcm-scenario-results.pdf</code></td>
+<td>PCM scenario test: 4 methods × 12 request kinds</td>
+</tr>
+<tr>
+<td>14</td>
+<td><code>sources/14-cache-paraphrase-benchmark.pdf</code></td>
+<td>Five-layer cache benchmark, 9,917 pairs, 2 languages</td>
+</tr>
+<tr>
+<td>15</td>
+<td><code>sources/15-cascade-vs-mini-only-comparison.md</code></td>
+<td>Nano→mini cascade vs mini-only, 20 questions</td>
+</tr>
+<tr>
+<td>16</td>
+<td><code>sources/16-live-cache-guard-results.json</code></td>
+<td>Live 5,000-prompt gateway trial of cache + guard</td>
+</tr>
+<tr>
+<td>17</td>
+<td><code>sources/17-summarization-and-speculative-decoding-survey/</code></td>
+<td>LaTeX survey: summarization &amp; speculative decoding</td>
+</tr>
+</tbody>
+</table>
+</body>
+</html>

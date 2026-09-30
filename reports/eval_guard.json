@@ -1,0 +1,28 @@
+{
+  "preset": "default",
+  "guard": true,
+  "model_behind_gateway": "gpt-4-1106-preview",
+  "prompts": 5000,
+  "embedder": "cached:sbert",
+  "cache": {
+    "hits": 5,
+    "hit_rate": 0.001,
+    "hits_by_layer": {
+      "semantic": 1,
+      "keyword": 4
+    },
+    "false_hits": 2,
+    "false_hit_rate_of_hits": 0.4
+  },
+  "cost_usd": {
+    "no_cache": 16.1211,
+    "with_cache": 16.1072,
+    "saved": 0.014,
+    "saved_pct": 0.09
+  },
+  "quality": {
+    "no_cache_avg_score": 0.7851,
+    "with_cache_avg_score": 0.7846,
+    "quality_lost": 0.0004
+  }
+}
